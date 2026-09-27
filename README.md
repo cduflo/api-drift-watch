@@ -35,7 +35,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: cduflo/api-drift-watch@v1   # <-- replace <owner> after publishing
+      - uses: <owner>/api-drift-watch@v1   # <-- replace <owner> after publishing
         with:
           vendor: twilio
           twilio-account-sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
@@ -86,7 +86,7 @@ This is the part that matters — a drift alerter that cries wolf gets disabled.
 ## Custom vendors
 
 ```yaml
-- uses: cduflo/api-drift-watch@v1
+- uses: <owner>/api-drift-watch@v1
   with:
     vendor: custom
     endpoints-json: |
@@ -107,8 +107,7 @@ Off by default. If you set `telemetry-endpoint` to an HTTPS URL, each run POSTs 
 
 This free probe opens an issue when an API drifts. **API Drift Watch Pro** ($99/mo) opens a **verified fix PR** in your repo instead — deterministic codemod + gated fixer, multi-vendor monitoring, and a mock-blind coverage report showing which of your API call sites have no canary.
 
-<!-- CHRIS: create a 2-field waitlist form (Tally/Google Form) and paste the URL below -->
-👉 **[Join the Pro waitlist](#)** — email only, no spam.
+👉 **[Join the Pro waitlist](https://forms.gle/1vyxbvhR8aNWJUmJ6)** — email only, no spam.
 
 ---
 
