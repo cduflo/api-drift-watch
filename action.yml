@@ -1,0 +1,77 @@
+name: "API Drift Watch"
+description: "Free probe: detect silent third-party API response-schema drift (Twilio/SendGrid/custom). Opens a GitHub issue when fields appear, disappear, or change type."
+author: "api-drift-watch"
+
+inputs:
+  vendor:
+    description: "Vendor preset: twilio | sendgrid | custom"
+    required: false
+    default: "twilio"
+  twilio-account-sid:
+    description: "Twilio Account SID (pass ${{ secrets.TWILIO_ACCOUNT_SID }})"
+    required: false
+    default: ""
+  twilio-auth-token:
+    description: "Twilio Auth Token (pass ${{ secrets.TWILIO_AUTH_TOKEN }})"
+    required: false
+    default: ""
+  sendgrid-api-key:
+    description: "SendGrid API key with restricted read scopes (pass ${{ secrets.SENDGRID_API_KEY }})"
+    required: false
+    default: ""
+  endpoints-json:
+    description: 'Custom vendor only: JSON array of {"name","method","url","headers"}'
+    required: false
+    default: ""
+  baselines-dir:
+    description: "Directory in the repo where schema baselines are stored"
+    required: false
+    default: ".apidrift/baselines"
+  update-baseline:
+    description: "Set to 'true' to re-snapshot baselines instead of diffing (use after intentional vendor changes)"
+    required: false
+    default: "false"
+  dry-run:
+    description: "Set to 'true' to print response shapes without writing baselines or opening issues"
+    required: false
+    default: "false"
+  create-issue:
+    description: "Open/update a GitHub issue when drift is detected"
+    required: false
+    default: "true"
+  fail-on-drift:
+    description: "Fail the workflow when drift is detected (default false: drift never breaks CI)"
+    required: false
+    default: "false"
+  telemetry-endpoint:
+    description: "Optional HTTPS endpoint receiving an anonymous {probe, version, vendor, drift} ping per run. Empty = disabled."
+    required: false
+    default: ""
+  github-token:
+    description: "Token used to open drift issues (defaults to the workflow token)"
+    required: false
+    default: "${{ github.token }}"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Probe vendor APIs and diff response schemas
+      shell: bash
+      env:
+        ADW_VENDOR: ${{ inputs.vendor }}
+        ADW_TWILIO_SID: ${{ inputs.twilio-account-sid }}
+        ADW_TWILIO_TOKEN: ${{ inputs.twilio-auth-token }}
+        ADW_SENDGRID_KEY: ${{ inputs.sendgrid-api-key }}
+        ADW_ENDPOINTS_JSON: ${{ inputs.endpoints-json }}
+        ADW_BASELINES_DIR: ${{ inputs.baselines-dir }}
+        ADW_UPDATE_BASELINE: ${{ inputs.update-baseline }}
+        ADW_DRY_RUN: ${{ inputs.dry-run }}
+        ADW_CREATE_ISSUE: ${{ inputs.create-issue }}
+        ADW_FAIL_ON_DRIFT: ${{ inputs.fail-on-drift }}
+        ADW_TELEMETRY_ENDPOINT: ${{ inputs.telemetry-endpoint }}
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: python3 "${{ github.action_path }}/scripts/drift_probe.py"
+
+branding:
+  icon: "activity"
+  color: "blue"
