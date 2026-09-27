@@ -35,7 +35,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: <owner>/api-drift-watch@v1   # <-- replace <owner> after publishing
+      - uses: cduflo/api-drift-watch@v1   # <-- replace <owner> after publishing
         with:
           vendor: twilio
           twilio-account-sid: ${{ secrets.TWILIO_ACCOUNT_SID }}
@@ -86,7 +86,7 @@ This is the part that matters — a drift alerter that cries wolf gets disabled.
 ## Custom vendors
 
 ```yaml
-- uses: <owner>/api-drift-watch@v1
+- uses: cduflo/api-drift-watch@v1
   with:
     vendor: custom
     endpoints-json: |
